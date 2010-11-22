@@ -1,0 +1,33 @@
+From b2a30e278391efcc911789b0c8864260eaf6e661 Mon Sep 17 00:00:00 2001
+From: Akinobu Mita <akinobu.mita@gmail.com>
+Date: Wed, 13 Oct 2010 11:09:33 +0900
+Subject: [PATCH 08/22] rds: stop including asm-generic/bitops/le.h
+
+No need to include asm-generic/bitops/le.h as all architectures
+provide little-endian bit operations now.
+
+Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
+Cc: Andy Grover <andy.grover@oracle.com>
+Cc: rds-devel@oss.oracle.com
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: netdev@vger.kernel.org
+---
+ net/rds/cong.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+diff --git a/net/rds/cong.c b/net/rds/cong.c
+index 90ca44f..fa578d3 100644
+--- a/net/rds/cong.c
++++ b/net/rds/cong.c
+@@ -34,8 +34,6 @@
+ #include <linux/types.h>
+ #include <linux/rbtree.h>
+ 
+-#include <asm-generic/bitops/le.h>
+-
+ #include "rds.h"
+ 
+ /*
+-- 
+1.7.3.1.45.g9855b
+

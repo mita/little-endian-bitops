@@ -1,0 +1,31 @@
+From f75237a616372dcfaa33ab42baeb31c2fb17c8d8 Mon Sep 17 00:00:00 2001
+From: Akinobu Mita <akinobu.mita@gmail.com>
+Date: Wed, 13 Oct 2010 11:08:39 +0900
+Subject: [PATCH 09/22] kvm: stop including asm-generic/bitops/le.h
+
+No need to include asm-generic/bitops/le.h as all architectures
+provide little-endian bit operations now.
+
+Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
+Cc: Avi Kivity <avi@redhat.com>
+Cc: Marcelo Tosatti <mtosatti@redhat.com>
+Cc: kvm@vger.kernel.org
+---
+ virt/kvm/kvm_main.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index da16155..57a7e3d 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -52,7 +52,6 @@
+ #include <asm/io.h>
+ #include <asm/uaccess.h>
+ #include <asm/pgtable.h>
+-#include <asm-generic/bitops/le.h>
+ 
+ #include "coalesced_mmio.h"
+ 
+-- 
+1.7.3.1.45.g9855b
+

@@ -1,0 +1,40 @@
+From bfbc363ffa4660487a67bfae5aa3d292d4a8d835 Mon Sep 17 00:00:00 2001
+From: Akinobu Mita <akinobu.mita@gmail.com>
+Date: Wed, 13 Oct 2010 14:52:48 +0900
+Subject: [PATCH 10/22] asm-generic: use little-endian bitops
+
+As a preparation for removing ext2 non-atomic bit operations from
+asm/bitops.h. This converts ext2 non-atomic bit operations to
+little-endian bit operations.
+
+Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+---
+ include/asm-generic/bitops/ext2-atomic.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/asm-generic/bitops/ext2-atomic.h b/include/asm-generic/bitops/ext2-atomic.h
+index ab1c875..bcf359f 100644
+--- a/include/asm-generic/bitops/ext2-atomic.h
++++ b/include/asm-generic/bitops/ext2-atomic.h
+@@ -5,7 +5,7 @@
+ 	({						\
+ 		int ret;				\
+ 		spin_lock(lock);			\
+-		ret = ext2_set_bit((nr), (unsigned long *)(addr)); \
++		ret = __test_and_set_le_bit((nr), (unsigned long *)(addr)); \
+ 		spin_unlock(lock);			\
+ 		ret;					\
+ 	})
+@@ -14,7 +14,7 @@
+ 	({						\
+ 		int ret;				\
+ 		spin_lock(lock);			\
+-		ret = ext2_clear_bit((nr), (unsigned long *)(addr)); \
++		ret = __test_and_clear_le_bit((nr), (unsigned long *)(addr)); \
+ 		spin_unlock(lock);			\
+ 		ret;					\
+ 	})
+-- 
+1.7.3.1.45.g9855b
+
