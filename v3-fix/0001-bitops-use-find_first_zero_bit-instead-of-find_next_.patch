@@ -1,0 +1,62 @@
+From f611130c4b1ceba23c5be6e0a0429749ff6e896d Mon Sep 17 00:00:00 2001
+From: Akinobu Mita <akinobu.mita@gmail.com>
+Date: Thu, 25 Nov 2010 13:22:03 +0900
+Subject: [PATCH 1/2] bitops: use find_first_zero_bit() instead of find_next_zero_bit(addr, size, 0)
+
+The little-endian bitops patch series introduced inefficiency to some
+little-endian architectures.
+
+include/asm-generic/bitops/le.h defines find_first_zero_le_bit() like this:
+
+	#define find_first_zero_le_bit(addr, size) \
+		find_next_zero_le_bit((addr), (size), 0)
+
+All little-endian architectures include le.h and little-endian bitops
+are just aliases for their native endian bitops. So above macro definision
+is converted to:
+
+	#define find_first_zero_le_bit(addr, size) \
+		find_next_zero_bit(addr, size, 0)
+
+This is inefficient for some architectures which has faster
+find_first_zero_bit() than find_next_zero_bit(addr, size, 0).
+
+Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
+---
+ include/asm-generic/bitops/le.h |    8 +++++---
+ 1 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/include/asm-generic/bitops/le.h b/include/asm-generic/bitops/le.h
+index 6ad46ce..17a7119 100644
+--- a/include/asm-generic/bitops/le.h
++++ b/include/asm-generic/bitops/le.h
+@@ -12,6 +12,8 @@
+ 	find_next_zero_bit(addr, size, offset)
+ #define find_next_le_bit(addr, size, offset) \
+ 	find_next_bit(addr, size, offset)
++#define find_first_zero_le_bit(addr, size) \
++	find_first_zero_bit(addr, size)
+ 
+ #elif defined(__BIG_ENDIAN)
+ 
+@@ -22,6 +24,9 @@ extern unsigned long find_next_zero_le_bit(const unsigned long *addr,
+ extern unsigned long find_next_le_bit(const unsigned long *addr,
+ 		unsigned long size, unsigned long offset);
+ 
++#define find_first_zero_le_bit(addr, size) \
++	find_next_zero_le_bit((addr), (size), 0)
++
+ #else
+ #error "Please fix <asm/byteorder.h>"
+ #endif
+@@ -43,7 +48,4 @@ extern unsigned long find_next_le_bit(const unsigned long *addr,
+ #define __test_and_clear_le_bit(nr, addr) \
+ 	__test_and_clear_bit((nr) ^ BITOP_LE_SWIZZLE, (addr))
+ 
+-#define find_first_zero_le_bit(addr, size) \
+-	find_next_zero_le_bit((addr), (size), 0)
+-
+ #endif /* _ASM_GENERIC_BITOPS_LE_H_ */
+-- 
+1.7.3.1.45.g9855b
+
